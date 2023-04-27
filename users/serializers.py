@@ -5,7 +5,10 @@ from users.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ['email','username', 'password', 'age', 'gender','introduction'] 
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
         
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -17,12 +20,18 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-    def update(self, validated_data):
-        user = super().create(validated_data)
-        password = user.password
-        user.set_password(password)
-        user.save()
-        return user
+    def update(self, obj, validated_data):
+        # user = super().create(validated_data)
+        # password = user.password
+        # user.set_password(password)
+        # user.save()
+        obj.email = validated_data.get('email', obj.email)
+        obj.username = validated_data.get('username', obj.username)
+        obj.password = validated_data.get('password', obj.password)
+        obj.age = validated_data.get('age', obj.age)
+        obj.introduction = validated_data.get('introduction', obj.introduction)
+        obj.save()
+        return obj
     
 
 
@@ -33,7 +42,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
+        token['username'] = user.username        
         token['email'] = user.email
+        token['gender'] = user.gender
+        token['age'] = user.age
         # ...
 
         return token
