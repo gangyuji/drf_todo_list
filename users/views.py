@@ -47,5 +47,5 @@ class ToDoListUserView(APIView):
         user = get_object_or_404(User, id=user_id)
         if request.user == user:
             user.delete()
-            return Response({'message': 'user 정보가 삭제되었습니다.'})
+        return Response({'message': 'user 정보가 삭제되었습니다.'})
     

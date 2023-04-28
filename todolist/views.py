@@ -3,7 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from todolist.models import ToDoList
-from todolist.serializers import ToDoListSerializer, ToDoListCreateSerializer
+from todolist.serializers import ToDoListSerializer, ToDoListCreateSerializer, ToDoListPutSerializer
 
 
 # Create your views here.
@@ -32,7 +32,7 @@ class ToDoListDetailView(APIView):
         todolist = get_object_or_404(ToDoList, id=todolist_id)
         if request.user == todolist.user:
             
-            serializer = ToDoListCreateSerializer(todolist, data=request.data)
+            serializer = ToDoListPutSerializer(todolist, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
